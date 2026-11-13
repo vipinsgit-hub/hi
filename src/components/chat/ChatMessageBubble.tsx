@@ -27,18 +27,19 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   return (
     <div
       className={cn(
-        'group relative flex flex-col mb-2.5 max-w-[85%] sm:max-w-[75%]',
+        'group relative flex flex-col mb-2 max-w-[88%] sm:max-w-[75%]',
         isSentByMe ? 'ml-auto items-end' : 'mr-auto items-start'
       )}
     >
-      <div className="relative flex items-center gap-1.5">
-        {/* Quick action menu trigger for sent messages */}
+      <div className="relative flex items-center gap-1">
+        {/* Quick action menu trigger for sent messages: accessible on mobile touch + desktop hover */}
         {isSentByMe && !isSending && !isFailed && (
-          <div className="relative opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="relative opacity-60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
             <button
               onClick={() => setShowMenu(prev => !prev)}
-              className="p-1 rounded-lg hover:bg-bg-elevated text-text-muted hover:text-text-primary transition-colors"
+              className="p-1.5 sm:p-1 rounded-lg text-text-muted hover:text-text-primary active:bg-bg-elevated transition-colors touch-manipulation min-w-[28px] min-h-[28px] flex items-center justify-center"
               title="Message options"
+              aria-label="Message options"
             >
               <MoreHorizontal className="w-3.5 h-3.5" />
             </button>
@@ -54,7 +55,7 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       setShowMenu(false);
                       onEdit(message);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-bg-elevated text-text-primary transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 sm:py-1.5 hover:bg-bg-elevated active:bg-bg-elevated text-text-primary transition-colors touch-manipulation"
                   >
                     <Pencil className="w-3 h-3 text-text-muted" />
                     <span>Edit</span>
@@ -66,7 +67,7 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                       setShowMenu(false);
                       onDelete(message.id);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 hover:bg-danger-subtle text-danger transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 sm:py-1.5 hover:bg-danger-subtle active:bg-danger-subtle text-danger transition-colors touch-manipulation"
                   >
                     <Trash2 className="w-3 h-3" />
                     <span>Delete</span>
@@ -80,7 +81,7 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
         {/* Message Bubble Container */}
         <div
           className={cn(
-            'relative px-4 py-2.5 rounded-2xl text-sm leading-relaxed transition-all break-words',
+            'relative px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl text-[13.5px] sm:text-sm leading-relaxed transition-all break-words',
             isSentByMe
               ? 'bg-[#1F1F1F] text-text-primary border border-[#2E2E2E] shadow-bubble-sent rounded-tr-sm'
               : 'bg-bg-panel text-text-primary border border-border-subtle shadow-bubble-recv rounded-tl-sm',
@@ -88,8 +89,10 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
             isSending && 'opacity-80'
           )}
         >
-          {/* Message Text */}
-          <div className="whitespace-pre-wrap select-text">{message.content}</div>
+          {/* Message Text with Native Text Selection */}
+          <div className="whitespace-pre-wrap select-text break-words font-normal">
+            {message.content}
+          </div>
 
           {/* Metadata Footer: Timestamp + Status Indicators */}
           <div
@@ -126,7 +129,7 @@ export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
           {onRetry && (
             <button
               onClick={() => onRetry(message)}
-              className="inline-flex items-center gap-1 underline hover:text-danger-hover font-medium transition-colors"
+              className="inline-flex items-center gap-1 underline hover:text-danger-hover font-medium transition-colors touch-manipulation py-0.5"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Retry</span>

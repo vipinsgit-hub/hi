@@ -70,7 +70,7 @@ export const ChatMessageArea: React.FC<ChatMessageAreaProps> = ({
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-text-muted gap-3 select-none">
         <Loader2 className="w-6 h-6 animate-spin text-text-secondary" />
-        <span className="text-xs">Decrypting private channel...</span>
+        <span className="text-xs font-mono">Loading private channel...</span>
       </div>
     );
   }
@@ -83,15 +83,15 @@ export const ChatMessageArea: React.FC<ChatMessageAreaProps> = ({
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 space-y-1 overscroll-contain select-none-touch"
+      className="flex-1 overflow-y-auto px-3 sm:px-6 py-2.5 sm:py-4 space-y-1 overscroll-contain select-text"
     >
       {/* Pagination: Load older messages button / indicator */}
       {hasMore && (
-        <div className="flex justify-center pb-4 pt-1">
+        <div className="flex justify-center pb-3 pt-1">
           <button
             onClick={onLoadOlder}
             disabled={isLoadingOlder}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-bg-panel border border-border-subtle text-xs text-text-secondary hover:text-text-primary hover:border-border-highlight transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bg-panel border border-border-subtle text-xs text-text-secondary hover:text-text-primary active:bg-bg-elevated transition-all disabled:opacity-50 touch-manipulation active:scale-95"
           >
             {isLoadingOlder ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -126,8 +126,7 @@ export const ChatMessageArea: React.FC<ChatMessageAreaProps> = ({
       })}
 
       {/* Anchor for automatic scroll */}
-      <div ref={bottomRef} className="h-2" />
+      <div ref={bottomRef} className="h-1.5" />
     </div>
   );
 };
-

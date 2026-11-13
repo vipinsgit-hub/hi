@@ -225,7 +225,7 @@ export const Register: React.FC = () => {
 
         <p className="text-center text-xs text-text-secondary pt-2">
           Already registered?{' '}
-          <Link to="/login" className="text-text-primary font-medium hover:underline">
+          <Link to="/login" className="text-text-primary font-medium hover:underline py-1 touch-manipulation inline-block">
             Sign in
           </Link>
         </p>

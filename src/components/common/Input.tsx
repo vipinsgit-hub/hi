@@ -16,7 +16,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-medium text-text-secondary">
+          <label htmlFor={inputId} className="block text-xs font-medium text-text-secondary select-none">
             {label}
           </label>
         )}
@@ -31,7 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             ref={ref}
             className={cn(
-              'w-full h-11 rounded-xl bg-bg-panel border text-sm text-text-primary placeholder:text-text-muted/60 transition-colors',
+              'w-full h-11 sm:h-10 rounded-xl bg-bg-panel border text-base sm:text-sm text-text-primary placeholder:text-text-muted/60 transition-colors',
               'focus:outline-none focus:ring-1 focus:ring-accent/40 focus:border-border-highlight',
               leftIcon ? 'pl-10' : 'pl-3.5',
               rightIcon ? 'pr-10' : 'pr-3.5',
@@ -41,7 +41,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 flex items-center text-text-muted">
+            <div className="absolute right-2.5 flex items-center text-text-muted">
               {rightIcon}
             </div>
           )}
@@ -49,7 +49,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {error ? (
           <p className="text-xs text-danger animate-fade-in">{error}</p>
         ) : helperText ? (
-          <p className="text-xs text-text-muted">{helperText}</p>
+          <p className="text-[11px] sm:text-xs text-text-muted">{helperText}</p>
         ) : null}
       </div>
     );
@@ -57,4 +57,3 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = 'Input';
-

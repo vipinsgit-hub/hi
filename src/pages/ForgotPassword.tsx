@@ -101,7 +101,7 @@ export const ForgotPassword: React.FC = () => {
           <div className="text-center pt-2">
             <Link
               to="/login"
-              className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors py-1.5 touch-manipulation"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Login</span>

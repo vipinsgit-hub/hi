@@ -39,7 +39,7 @@ export const ChatMessageComposer: React.FC<ChatMessageComposerProps> = ({
     const textarea = textareaRef.current;
     if (!textarea) return;
     textarea.style.height = 'auto';
-    const maxHeight = 160; // ~6 lines
+    const maxHeight = 140; // ~5-6 lines
     textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
   }, []);
 
@@ -76,7 +76,7 @@ export const ChatMessageComposer: React.FC<ChatMessageComposerProps> = ({
       if (onTyping) onTyping(false);
     } finally {
       setIsSending(false);
-      // Keep focus on desktop
+      // Keep focus on desktop devices (>= 768px)
       if (window.innerWidth >= 768) {
         textareaRef.current?.focus();
       }
@@ -84,7 +84,7 @@ export const ChatMessageComposer: React.FC<ChatMessageComposerProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enter without Shift sends the message
+    // Enter without Shift sends the message on desktop
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
@@ -99,25 +99,26 @@ export const ChatMessageComposer: React.FC<ChatMessageComposerProps> = ({
   const isBlank = !content.trim();
 
   return (
-    <div className="w-full bg-bg-main border-t border-border-subtle p-3 sm:p-4 pb-safe">
+    <div className="w-full bg-bg-main/95 border-t border-border-subtle p-2.5 sm:p-4 pb-safe backdrop-blur-md select-none">
       {/* Editing State Notice */}
       {editingMessage && (
         <div className="flex items-center justify-between px-3 py-1.5 mb-2 bg-bg-panel border border-border-subtle rounded-xl text-xs text-text-secondary animate-fade-in">
           <span className="truncate">
-            Editing message: <span className="text-text-primary italic">"{editingMessage.content}"</span>
+            Editing: <span className="text-text-primary italic">"{editingMessage.content}"</span>
           </span>
           <button
             onClick={onCancelEdit}
-            className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-colors"
+            className="p-1 rounded-md text-text-muted hover:text-text-primary active:bg-bg-elevated transition-colors touch-manipulation min-w-[28px] min-h-[28px] flex items-center justify-center"
             title="Cancel editing"
+            aria-label="Cancel editing"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
-      {/* Composer Input Box */}
-      <div className="relative flex items-end gap-2 bg-bg-panel border border-border-subtle rounded-2xl p-1.5 px-3 focus-within:border-border-highlight focus-within:ring-1 focus-within:ring-accent/40 transition-all">
+      {/* Composer Input Box: 16px text-base on mobile prevents iOS auto-zoom */}
+      <div className="relative flex items-end gap-1.5 sm:gap-2 bg-bg-panel border border-border-subtle rounded-2xl p-1.5 pl-3 pr-1.5 focus-within:border-border-highlight focus-within:ring-1 focus-within:ring-accent/40 transition-all">
         <textarea
           ref={textareaRef}
           value={content}
@@ -126,18 +127,18 @@ export const ChatMessageComposer: React.FC<ChatMessageComposerProps> = ({
           placeholder="Send a private message..."
           rows={1}
           disabled={disabled || isSending}
-          className="w-full max-h-40 py-2 bg-transparent text-sm text-text-primary placeholder:text-text-muted/60 resize-none focus:outline-none leading-relaxed select-text"
+          className="w-full max-h-36 py-2 bg-transparent text-base sm:text-sm text-text-primary placeholder:text-text-muted/60 resize-none focus:outline-none leading-relaxed select-text"
           style={{ minHeight: '2.5rem' }}
         />
 
-        {/* Action Button: Send or Confirm Edit */}
+        {/* Action Button: Ergonomic one-handed tap target */}
         <button
           type="button"
           onClick={handleSubmit}
           disabled={isBlank || isSending || disabled}
           aria-label={editingMessage ? 'Save changes' : 'Send message'}
           className={cn(
-            'flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 mb-1',
+            'flex-shrink-0 w-9 h-9 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center transition-all duration-150 mb-0.5 touch-manipulation',
             isBlank || isSending || disabled
               ? 'bg-bg-elevated text-text-muted/40 cursor-not-allowed'
               : 'bg-text-primary text-bg-main hover:bg-white active:scale-95 shadow-sm'

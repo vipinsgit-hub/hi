@@ -26,7 +26,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] rounded-xl';
+      'inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.97] rounded-xl touch-manipulation';
 
     const variants = {
       primary:
@@ -34,16 +34,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       accent:
         'bg-accent text-white hover:bg-accent-hover shadow-sm',
       secondary:
-        'bg-bg-panel hover:bg-bg-elevated text-text-primary border border-border-subtle hover:border-border-highlight',
+        'bg-bg-panel hover:bg-bg-elevated active:bg-bg-elevated text-text-primary border border-border-subtle hover:border-border-highlight',
       ghost:
-        'bg-transparent hover:bg-bg-panel text-text-secondary hover:text-text-primary',
+        'bg-transparent hover:bg-bg-panel active:bg-bg-panel text-text-secondary hover:text-text-primary',
       danger:
-        'bg-danger-subtle text-danger border border-danger/20 hover:bg-danger/20 hover:border-danger/40',
+        'bg-danger-subtle text-danger border border-danger/20 hover:bg-danger/20 active:bg-danger/30 hover:border-danger/40',
     };
 
     const sizes = {
-      sm: 'h-8 px-3 text-xs gap-1.5',
-      md: 'h-10 px-4 text-sm gap-2',
+      sm: 'h-9 sm:h-8 px-3 text-xs gap-1.5',
+      md: 'h-11 sm:h-10 px-4 text-sm gap-2',
       lg: 'h-12 px-5 text-base gap-2.5',
     };
 
@@ -67,4 +67,3 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
-

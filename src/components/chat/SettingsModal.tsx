@@ -34,11 +34,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, p
       title="Settings"
       description="Private channel details and account management"
     >
-      <div className="space-y-4 text-sm max-h-[75vh] overflow-y-auto pr-1">
+      <div className="space-y-3.5 sm:space-y-4 text-sm max-h-[75dvh] overflow-y-auto pr-1">
         {/* User Identity Details */}
-        <div className="p-3.5 rounded-xl bg-bg-secondary border border-border-subtle space-y-2">
+        <div className="p-3 sm:p-3.5 rounded-xl bg-bg-secondary border border-border-subtle space-y-2">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-bg-panel border border-border-subtle flex items-center justify-center text-text-primary">
+            <div className="w-8 h-8 rounded-lg bg-bg-panel border border-border-subtle flex items-center justify-center text-text-primary flex-shrink-0">
               <User className="w-4 h-4 text-text-secondary" />
             </div>
             <div className="min-w-0">
@@ -56,23 +56,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, p
         </div>
 
         {/* Security & Access Information */}
-        <div className="p-3.5 rounded-xl bg-bg-secondary border border-border-subtle space-y-2.5">
+        <div className="p-3 sm:p-3.5 rounded-xl bg-bg-secondary border border-border-subtle space-y-2">
           <div className="flex items-center gap-2 text-xs font-medium text-text-primary">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
             <span>Private Two-Person Channel</span>
           </div>
           <p className="text-xs text-text-secondary leading-relaxed">
             This private conversation is shared exclusively with <strong className="text-text-primary">{peerName}</strong>. All requests enforce database Row-Level Security.
           </p>
-          <div className="flex items-center gap-2 text-[11px] text-emerald-400 font-mono pt-1">
-            <Radio className="w-3 h-3 animate-pulse" />
+          <div className="flex items-center gap-2 text-[11px] text-emerald-400 font-mono pt-0.5">
+            <Radio className="w-3 h-3 animate-pulse flex-shrink-0" />
             <span>Realtime synchronization active</span>
           </div>
         </div>
 
         {/* Development Preview Switcher (Only visible in Preview Mode) */}
         {isMockMode && switchMockUser && (
-          <div className="p-3.5 rounded-xl bg-accent-subtle border border-accent/20 space-y-2">
+          <div className="p-3 sm:p-3.5 rounded-xl bg-accent-subtle border border-accent/20 space-y-2">
             <div className="flex items-center gap-2 text-xs font-medium text-accent">
               <Users className="w-3.5 h-3.5" />
               <span>Preview Switcher (Test Both Viewpoints)</span>

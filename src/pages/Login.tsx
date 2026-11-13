@@ -111,10 +111,10 @@ export const Login: React.FC = () => {
             error={passwordError}
             disabled={isSubmitting}
           />
-          <div className="flex justify-end pt-1">
+          <div className="flex justify-end pt-0.5">
             <Link
               to="/forgot-password"
-              className="text-xs text-text-muted hover:text-text-primary transition-colors"
+              className="text-xs text-text-muted hover:text-text-primary transition-colors py-1 touch-manipulation"
             >
               Forgot password?
             </Link>
@@ -164,7 +164,7 @@ export const Login: React.FC = () => {
 
         <p className="text-center text-xs text-text-secondary pt-2">
           Need an account?{' '}
-          <Link to="/register" className="text-text-primary font-medium hover:underline">
+          <Link to="/register" className="text-text-primary font-medium hover:underline py-1 touch-manipulation inline-block">
             Register here
           </Link>
         </p>
