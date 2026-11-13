@@ -10,7 +10,6 @@
 // Includes origin allowlist CORS, input validation, and brute-force protection.
 // ====================================================================
 
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 // Explicit CORS origin allowlist as required by security specifications
@@ -20,11 +19,14 @@ const ALLOWED_ORIGINS = [
   "https://hichat-v1.vercel.app",
 ];
 
-function buildCorsHeaders(origin: string | null): Record<string, string> {
+function buildCorsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get("origin");
   const isAllowed = origin && ALLOWED_ORIGINS.includes(origin);
+  const requestHeaders = req.headers.get("access-control-request-headers");
+
   const headers: Record<string, string> = {
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, prefer, x-supabase-auth",
+    "Access-Control-Allow-Headers": requestHeaders || "authorization, x-client-info, apikey, content-type, prefer, x-supabase-auth",
     "Access-Control-Max-Age": "86400",
     "Vary": "Origin",
   };
@@ -39,10 +41,10 @@ function buildCorsHeaders(origin: string | null): Record<string, string> {
 // Generic error response to prevent username enumeration
 const GENERIC_AUTH_ERROR = "Invalid username or password.";
 
-serve(async (req: Request) => {
+Deno.serve(async (req: Request) => {
   const origin = req.headers.get("origin");
   const isAllowed = !origin || ALLOWED_ORIGINS.includes(origin);
-  const corsHeaders = buildCorsHeaders(origin);
+  const corsHeaders = buildCorsHeaders(req);
 
   // 1. Handle CORS preflight
   if (req.method === "OPTIONS") {
