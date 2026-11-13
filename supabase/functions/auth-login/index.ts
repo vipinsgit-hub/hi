@@ -18,28 +18,50 @@ const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:4173",
   "https://hi.russell.app",
+  "https://hi-six-topaz.vercel.app",
 ];
 
-function getCorsHeaders(req: Request) {
-  const origin = req.headers.get("origin") || "";
-  const isAllowed = ALLOWED_ORIGINS.includes(origin) || !origin;
-  return {
-    "Access-Control-Allow-Origin": isAllowed && origin ? origin : ALLOWED_ORIGINS[0],
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+function buildCorsHeaders(origin: string | null): Record<string, string> {
+  const isAllowed = origin && ALLOWED_ORIGINS.includes(origin);
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, prefer, x-supabase-auth",
+    "Access-Control-Max-Age": "86400",
     "Vary": "Origin",
   };
+
+  if (isAllowed) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+
+  return headers;
 }
 
 // Generic error response to prevent username enumeration
 const GENERIC_AUTH_ERROR = "Invalid username or password.";
 
 serve(async (req: Request) => {
-  const corsHeaders = getCorsHeaders(req);
+  const origin = req.headers.get("origin");
+  const isAllowed = !origin || ALLOWED_ORIGINS.includes(origin);
+  const corsHeaders = buildCorsHeaders(origin);
 
   // 1. Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: corsHeaders });
+    if (origin && !isAllowed) {
+      return new Response(
+        JSON.stringify({ error: "Origin not allowed by CORS policy." }),
+        { status: 403, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    return new Response("ok", { status: 200, headers: corsHeaders });
+  }
+
+  // Reject unapproved origins for actual POST requests
+  if (origin && !isAllowed) {
+    return new Response(
+      JSON.stringify({ error: "Origin not allowed by CORS policy." }),
+      { status: 403, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   if (req.method !== "POST") {
