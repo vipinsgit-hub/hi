@@ -13,16 +13,32 @@ export class ChatService {
   /**
    * Fetch chat room details including members and their profiles.
    */
-  async getRoom(roomId: string): Promise<ChatRoom | null> {
+  async getRoom(roomId?: string | null): Promise<ChatRoom | null> {
     if (!isSupabaseConfigured || !supabase) {
-      return mockChatService.getRoom(roomId);
+      return mockChatService.getRoom(roomId || 'room_hi_private_001');
     }
 
     try {
+      let targetRoomId = roomId;
+      if (!targetRoomId) {
+        const { data: firstRoom } = await supabase
+          .from('chat_rooms')
+          .select('id')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+
+        if (firstRoom?.id) {
+          targetRoomId = firstRoom.id;
+        } else {
+          return null;
+        }
+      }
+
       const { data: room, error: roomError } = await supabase
         .from('chat_rooms')
         .select('*')
-        .eq('id', roomId)
+        .eq('id', targetRoomId)
         .single();
 
       if (roomError || !room) {
@@ -46,7 +62,7 @@ export class ChatService {
             updated_at
           )
         `)
-        .eq('room_id', roomId);
+        .eq('room_id', targetRoomId);
 
       if (membersError) {
         return {
@@ -80,12 +96,28 @@ export class ChatService {
   /**
    * Fetch messages for a specific room with optional chronological pagination.
    */
-  async fetchMessages(roomId: string, limit = 50, beforeCreatedAt?: string): Promise<Message[]> {
+  async fetchMessages(roomId?: string | null, limit = 50, beforeCreatedAt?: string): Promise<Message[]> {
     if (!isSupabaseConfigured || !supabase) {
-      return mockChatService.fetchMessages(roomId, limit);
+      return mockChatService.fetchMessages(roomId || 'room_hi_private_001', limit);
     }
 
     try {
+      let targetRoomId = roomId;
+      if (!targetRoomId) {
+        const { data: firstRoom } = await supabase
+          .from('chat_rooms')
+          .select('id')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+
+        if (firstRoom?.id) {
+          targetRoomId = firstRoom.id;
+        } else {
+          return [];
+        }
+      }
+
       let query = supabase
         .from('messages')
         .select(`
@@ -106,7 +138,7 @@ export class ChatService {
             updated_at
           )
         `)
-        .eq('room_id', roomId)
+        .eq('room_id', targetRoomId)
         .is('deleted_at', null)
         .order('created_at', { ascending: false })
         .limit(limit);
@@ -150,10 +182,24 @@ export class ChatService {
       return mockChatService.sendMessage(payload, senderId);
     }
 
+    let targetRoomId = payload.roomId;
+    if (!targetRoomId) {
+      const { data: firstRoom } = await supabase
+        .from('chat_rooms')
+        .select('id')
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (firstRoom?.id) {
+        targetRoomId = firstRoom.id;
+      }
+    }
+
     const { data, error } = await supabase
       .from('messages')
       .insert({
-        room_id: payload.roomId,
+        room_id: targetRoomId,
         sender_id: senderId,
         content: payload.content.trim(),
       })
