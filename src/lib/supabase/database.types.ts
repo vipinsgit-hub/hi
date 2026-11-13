@@ -248,6 +248,14 @@ export interface Database {
         };
         Returns: boolean;
       };
+      ensure_private_chat_room: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      get_default_room_id: {
+        Args: Record<string, never>;
+        Returns: string;
+      };
       initialize_chat_room: {
         Args: {
           room_name?: string;

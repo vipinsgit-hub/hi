@@ -8,28 +8,23 @@ import { Register } from '@/pages/Register';
 import { ForgotPassword } from '@/pages/ForgotPassword';
 import { ResetPassword } from '@/pages/ResetPassword';
 import { Chat } from '@/pages/Chat';
-import { AccessPending } from '@/pages/AccessPending';
 import { NotFound } from '@/pages/NotFound';
 import { Loader2 } from 'lucide-react';
 
 const ProtectedChatRoute: React.FC = () => {
-  const { user, isLoading, accessStatus } = useAuth();
+  const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-screen bg-bg-main text-text-muted gap-3">
         <Loader2 className="w-6 h-6 animate-spin text-text-primary" />
-        <span className="text-xs font-mono">Authenticating session...</span>
+        <span className="text-xs font-mono">Connecting to chat...</span>
       </div>
     );
   }
 
   if (!user) {
     return <Navigate to="/login" replace />;
-  }
-
-  if (accessStatus === 'pending_approval' || accessStatus === 'unauthorized') {
-    return <Navigate to="/access-pending" replace />;
   }
 
   return (
@@ -40,7 +35,7 @@ const ProtectedChatRoute: React.FC = () => {
 };
 
 const PublicOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isLoading, accessStatus } = useAuth();
+  const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -51,35 +46,10 @@ const PublicOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) 
   }
 
   if (user) {
-    if (accessStatus === 'authorized') {
-      return <Navigate to="/chat" replace />;
-    }
-    return <Navigate to="/access-pending" replace />;
-  }
-
-  return <>{children}</>;
-};
-
-const AccessPendingRoute: React.FC = () => {
-  const { user, isLoading, accessStatus } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-screen bg-bg-main text-text-muted gap-3">
-        <Loader2 className="w-6 h-6 animate-spin text-text-primary" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (accessStatus === 'authorized') {
     return <Navigate to="/chat" replace />;
   }
 
-  return <AccessPending />;
+  return <>{children}</>;
 };
 
 export const App: React.FC = () => {
@@ -88,7 +58,7 @@ export const App: React.FC = () => {
       <ToastProvider>
         <AuthProvider>
           <Routes>
-            {/* Public Routes */}
+            {/* Public Auth Routes */}
             <Route
               path="/login"
               element={
@@ -115,18 +85,13 @@ export const App: React.FC = () => {
             />
             <Route
               path="/reset-password"
-              element={
-                <ResetPassword />
-              }
+              element={<ResetPassword />}
             />
 
-            {/* Access Pending Guarded Route */}
-            <Route path="/access-pending" element={<AccessPendingRoute />} />
-
-            {/* Private Chat Route */}
+            {/* Private Direct Chat Route */}
             <Route path="/chat" element={<ProtectedChatRoute />} />
 
-            {/* Root Redirect */}
+            {/* Root Redirect to Chat */}
             <Route path="/" element={<Navigate to="/chat" replace />} />
 
             {/* Catch-all 404 */}
@@ -139,4 +104,3 @@ export const App: React.FC = () => {
 };
 
 export default App;
-

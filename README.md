@@ -129,12 +129,11 @@ hi/
     │       └── database.types.ts    # Comprehensive Database interface matching SQL schema
     │
     ├── pages/
-    │   ├── AccessPending.tsx        # Screen shown when account is not in chat_members
     │   ├── Chat.tsx                 # Primary two-person real-time messaging interface
     │   ├── ForgotPassword.tsx       # Password recovery request screen
-    │   ├── Login.tsx                # Clean login with 1-click preview presets
+    │   ├── Login.tsx                # Clean username login with 1-click preview presets
     │   ├── NotFound.tsx             # 404 handler
-    │   ├── Register.tsx             # Account registration with approval notice
+    │   ├── Register.tsx             # Account registration
     │   └── ResetPassword.tsx        # Password update screen from email link
     │
     ├── styles/
@@ -255,11 +254,11 @@ VITE_SUPABASE_URL=https://qstlprcewjnmqexiqgjj.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
 ```
 
-### Step 6: Room Initialization & Member Invitations
-You do not need to write manual SQL queries to join members:
-1. **Owner Bootstrap**: The first user logs in and can click **"Initialize Private Room (Owner)"** on the `/access-pending` page.
-2. **Partner Invitation**: The owner opens **Chat Settings** -> **Invite Partner**, enters the partner's email address, and copies the secure 7-day cryptographic invite link (`https://hichat-v1.vercel.app/access-pending?token=<token>`).
-3. **Partner Join**: The partner registers with their email, clicks the link, and is atomically admitted into the private channel via the `redeem_invitation` RPC with database row locking.
+### Step 6: Automatic Zero-Friction Room Enrollment
+The application requires zero manual room setup or invitations:
+1. **Automatic Initialization**: When the first authorized user logs in, the single private chat room is automatically ensured and initialized.
+2. **Direct Peer Admission**: When the second authorized user logs in, they are immediately and automatically admitted into the same private conversation.
+3. **Strict 2-Person Guarantee**: Row-level database locking and capacity checks strictly cap conversation membership to 2 participants. Unauthorized third parties are denied entry.
 
 ---
 

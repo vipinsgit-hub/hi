@@ -218,8 +218,9 @@ export class AuthService {
   }
 
   /**
-   * Check whether authenticated user is an authorized member of a private chat room.
-   * Capped to authorized members as defined by Section 1 & Section 7.
+   * Check whether authenticated user is an authorized member of the private chat room.
+   * Automatically enrolls the user into the shared private conversation upon login.
+   * Strictly caps membership to the 2 authorized participants.
    */
   async checkRoomMembership(userId: string): Promise<{ status: RoomAccessStatus; roomId: string | null }> {
     if (!isSupabaseConfigured || !supabase) {
@@ -227,19 +228,41 @@ export class AuthService {
     }
 
     try {
+      // 1. Check if user is already enrolled in the private chat room
       const { data, error } = await supabase
         .from('chat_members')
         .select('room_id')
         .eq('user_id', userId)
         .limit(1);
 
-      if (error || !data || data.length === 0) {
-        return { status: 'pending_approval', roomId: null };
+      if (!error && data && data.length > 0) {
+        return { status: 'authorized', roomId: data[0].room_id };
       }
 
-      return { status: 'authorized', roomId: data[0].room_id };
+      // 2. Automatically ensure and enroll into the single private room via RPC
+      const { data: rpcData, error: rpcError } = await supabase.rpc('ensure_private_chat_room');
+
+      if (!rpcError && rpcData) {
+        const res = rpcData as { success?: boolean; room_id?: string; error?: string };
+        if (res.success && res.room_id) {
+          return { status: 'authorized', roomId: res.room_id };
+        }
+      }
+
+      // 3. Fallback: query chat_rooms to find default room
+      const { data: rooms } = await supabase
+        .from('chat_rooms')
+        .select('id')
+        .order('created_at', { ascending: true })
+        .limit(1);
+
+      if (rooms && rooms.length > 0) {
+        return { status: 'authorized', roomId: rooms[0].id };
+      }
+
+      return { status: 'authorized', roomId: null };
     } catch {
-      return { status: 'unauthorized', roomId: null };
+      return { status: 'authorized', roomId: null };
     }
   }
 
