@@ -258,7 +258,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
 ### Step 6: Room Initialization & Member Invitations
 You do not need to write manual SQL queries to join members:
 1. **Owner Bootstrap**: The first user logs in and can click **"Initialize Private Room (Owner)"** on the `/access-pending` page.
-2. **Partner Invitation**: The owner opens **Chat Settings** -> **Invite Partner**, enters the partner's email address, and copies the secure 7-day cryptographic invite link (`https://hi-six-topaz.vercel.app/access-pending?token=<token>`).
+2. **Partner Invitation**: The owner opens **Chat Settings** -> **Invite Partner**, enters the partner's email address, and copies the secure 7-day cryptographic invite link (`https://hichat-v1.vercel.app/access-pending?token=<token>`).
 3. **Partner Join**: The partner registers with their email, clicks the link, and is atomically admitted into the private channel via the `redeem_invitation` RPC with database row locking.
 
 ---
@@ -275,7 +275,7 @@ You do not need to write manual SQL queries to join members:
 ## 8. Vercel Deployment
 
 The application is deployed on **Vercel**:
-- Production URL: `https://hi-six-topaz.vercel.app`
+- Production URL: `https://hichat-v1.vercel.app`
 - Standard SPA rewrite configuration is supplied via `vercel.json`.
 - Build command: `npm run build`
 - Output directory: `dist`
