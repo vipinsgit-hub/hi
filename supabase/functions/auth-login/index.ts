@@ -17,7 +17,6 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:4173",
-  "https://hi.russell.app",
   "https://hi-six-topaz.vercel.app",
 ];
 
